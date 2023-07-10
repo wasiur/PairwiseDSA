@@ -50,8 +50,8 @@ S_dot <- function(t, x, params){
 
 
 #### Stan parameters 
-N <- 1000
-nChains <- 2
+N <- 5000
+nChains <- 4
 nIter <- 5000
 
 
@@ -123,6 +123,7 @@ fit <- mod$sample(
   seed = 123, 
   chains = nChains, 
   parallel_chains = nChains,
+  iter_sampling = nIter,
   refresh = 500 # print update every 500 iters
 )
 
@@ -256,7 +257,7 @@ Tmax <- 81
 
 #### Stan parameters 
 N <- 1000
-nChains <- 2
+nChains <- 1
 nIter <- 5000 
 
 
@@ -320,6 +321,7 @@ fit <- mod$sample(
   seed = 123, 
   chains = nChains, 
   parallel_chains = nChains,
+  iter_sampling = nIter,
   refresh = 500 # print update every 500 iters
 )
 
@@ -426,12 +428,11 @@ ggsave("plots/AH1N1/full_uninformative/AH1N1_I0_histogram_uninformative.pdf", pl
 
 
 Eff_popsize_plot<-ggplot(posterior_samples, aes(x=effective_population_size)) + 
-  geom_histogram(aes(y=..density..),  alpha = 0.25, binwidth = 1000, col = 1, fill = 1) +
+  geom_histogram(aes(y=..density..),  alpha = 0.25, binwidth = 100, col = 1, fill = 1) +
   geom_density(alpha=.8, lwd = 1.2, adjust = 1.5)+
   labs(x="Effective population size", y = "Density")+
   geom_point(aes(x = mean(posterior_samples$effective_population_size), y = 0), pch = 17, size = 10, col = 2) +
-  theme_classic() + 
-  xlim(c(0, 40000))
+  theme_classic() 
 Eff_popsize_plot
 ggsave("plots/AH1N1/full_uninformative/AH1N1_Effective_popsize_histogram_uninformative.pdf", plot=Eff_popsize_plot, device="pdf", width = 6, height = 4)
 
@@ -448,5 +449,16 @@ ggsave("plots/AH1N1/full_uninformative/AH1N1_Total_popsize_histogram_uninformati
 
 
 write.csv(posterior_samples, file="plots/AH1N1/full_uninformative/AH1N1_DSA_posterior_samples_uninformative.csv")
+
+abc <- read.csv(file="plots/AH1N1/full_uninformative/AH1N1_DSA_posterior_samples_uninformative.csv")
+
+Eff_popsize_plot<-ggplot(abc, aes(x=effective_population_size)) + 
+  geom_histogram(aes(y=..density..),  alpha = 0.25, binwidth = 100, col = 1, fill = 1) +
+  geom_density(alpha=.8, lwd = 1.2, adjust = 1.5)+
+  labs(x="Effective population size", y = "Density")+
+  geom_point(aes(x = mean(abc$effective_population_size), y = 0), pch = 17, size = 10, col = 2) +
+  theme_classic() 
+Eff_popsize_plot
+ggsave("plots/AH1N1/full_uninformative/AH1N1_Effective_popsize_histogram_uninformative.pdf", plot=Eff_popsize_plot, device="pdf", width = 6, height = 4)
 
 

@@ -50,7 +50,7 @@ S_dot <- function(t, x, params){
 }
 
 #####Stan parameters
-N <- 1000
+N <- 5000
 
 ##### Data 
 base_data <- read.delim("data/FMD/processed_time_daily_cases.txt", sep="", header = FALSE)
@@ -105,8 +105,8 @@ hist(infection_times_sample)
 stan_data <- list(N = N, 
                   infection_times = infection_times_sample)
 
-nChains <- 2
-nIter <- 5000 
+nChains <- 4
+nIter <- 5000
 
 #file <- file.path("~/Work/Scripts/PairwiseDSA","FMD_uninformative_prior.stan")
 file <- file.path(getwd(),"FMD_uninformative_prior.stan")
@@ -119,6 +119,7 @@ fit <- mod$sample(
   seed = 123, 
   chains = nChains, 
   parallel_chains = nChains,
+  iter_sampling = nIter, 
   refresh = 500 # print update every 500 iters
 )
 
@@ -139,7 +140,7 @@ R0_plot<-ggplot(posterior_samples, aes(x=R0)) +
   # geom_vline(xintercept = mean(posterior_samples$R0), col = 2, lwd = 1.2) +
   # geom_vline(xintercept = median(posterior_samples$R0), col = 2, lwd = 1.2, lty = 2) +
   geom_point(aes(x = mean(posterior_samples$R0), y = 0), pch = 17, size = 10, col = 2) +
-  theme_classic()
+  theme_classic() 
 R0_plot
 ggsave("plots/FMD/uninformative/FMD_R0_histogram_uninformative.pdf", plot=R0_plot, device="pdf", width = 6, height = 4)
 
@@ -177,7 +178,7 @@ n_plot<-ggplot(posterior_samples, aes(x=n)) +
   geom_density(alpha=.8, lwd = 1.2, adjust = 1.75)+
   labs(x="Degree", y = "Density")+
   geom_point(aes(x = mean(posterior_samples$n), y = 0), pch = 17, size = 10, col = 2) +
-  theme_classic()
+  theme_classic() 
 n_plot
 ggsave("plots/FMD/uninformative/FMD_n_histogram_uninformative.pdf", plot=n_plot, device="pdf", width = 6, height = 4)
 

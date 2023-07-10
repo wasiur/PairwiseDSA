@@ -53,17 +53,21 @@ transformed data {
 parameters {
     real<lower=0.0> R0;
     real<lower=R0+1.0, upper=12.0> n;
-    real<lower=0.00> gamma;
-    real<lower=0.0, upper=0.10> rho;
+    //real<lower=R0+1.0> n;
+    //real<lower=0.5, upper=1.0> xi;
+    real<lower=0.0> gamma;
+    //real<lower=0.0, upper=0.10> rho;
+    real<lower=0.0, upper=1.0> rho;
 }
 
 transformed parameters{
+  //real<lower=1.0+R0> n = 1.0/(1-xi);
   real<lower=2.0> deg = round(n);
-  real<lower=0.0, upper=1.0> xi = 1.0*(n-1)/n;
+  real<lower=0.50> xi = 1.0*(n-1)/n;
   //real gamma = gamma_0;
   real<lower=0.0> tau = R0*gamma/(n*xi - R0);
   real<lower=0.0> b = n*tau; 
-  real<lower=0.0> a = tau + gamma;
+  real<lower=gamma> a = tau + gamma;
   //real rho=1.0/10000;
 }
 
